@@ -38,5 +38,6 @@ export const donorHistory = (donorId) => API.get(`/donors/${donorId}/history`);
 export const getHospitals = () => API.get('/hospitals');
 
 export const dashboardSummary = () => API.get('/dashboard/summary');
+export const getTableData = (tableName) => API.get(`/${tableName}`);
 
 export default API;

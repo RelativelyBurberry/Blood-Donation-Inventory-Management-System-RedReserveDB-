@@ -10,6 +10,7 @@ import Requests from './pages/Requests';
 import Donors from './pages/Donors';
 import HospitalInventory from './pages/HospitalInventory';
 import DonorProfile from './pages/DonorProfile';
+import DataExplorer from './pages/DataExplorer';
 
 function App() {
   return (
@@ -37,6 +38,11 @@ function App() {
         <Route path="/admin/donors" element={
           <ProtectedRoute allowedRoles={['Admin']}>
             <AppLayout><Donors /></AppLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/data-explorer" element={
+          <ProtectedRoute allowedRoles={['Admin']}>
+            <AppLayout><DataExplorer /></AppLayout>
           </ProtectedRoute>
         } />
 

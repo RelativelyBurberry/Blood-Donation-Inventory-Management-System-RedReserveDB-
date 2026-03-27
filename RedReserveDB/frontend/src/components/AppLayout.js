@@ -19,7 +19,8 @@ const AppLayout = ({ children }) => {
       { to: '/admin/dashboard', label: 'Dashboard' },
       { to: '/admin/inventory', label: 'Inventory' },
       { to: '/admin/requests', label: 'Requests' },
-      { to: '/admin/donors', label: 'Donors' }
+      { to: '/admin/donors', label: 'Donors' },
+      { to: '/admin/data-explorer', label: 'Data Explorer' }
     );
   }
 
