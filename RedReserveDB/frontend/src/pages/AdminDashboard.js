@@ -91,6 +91,7 @@ const AdminDashboard = () => {
         </div>
         <div className="card">
           <h3 style={{ marginTop: 0 }}>Weekly Fulfillment Trend</h3>
+          <div style={{ height: "300px" }}>
           <Bar
             data={{
               labels: (summary?.usageDaily || []).map((item) => String(item.day).split('T')[0]),
@@ -105,6 +106,7 @@ const AdminDashboard = () => {
             options={{ responsive: true, maintainAspectRatio: false }}
             height={260}
           />
+          </div>
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 const generateUnitNumber = () => {
-    const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+    const suffix = Math.random().toString(36).slice(2, 4).toUpperCase();
     return `BU${Date.now().toString().slice(-6)}${suffix}`;
 };
 
