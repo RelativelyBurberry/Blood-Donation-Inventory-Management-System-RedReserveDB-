@@ -1,51 +1,56 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../services/api';
 
 const Login = () => {
-    const [role, setRole] = useState('Admin');
-    const [id, setId] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-            const response = await loginUser({ role, id });
-            if (response.data.success) {
-                localStorage.setItem('user', JSON.stringify(response.data));
-                if (role === 'Admin') navigate('/admin');
-                if (role === 'Hospital') navigate('/hospital');
-                if (role === 'Donor') navigate('/donor');
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Check your ID.');
-        }
-    };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-    return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc' }}>
-            <h3>Login to RedReserve</h3>
-            <p><small>Hint: Admin ID is <b>ADMIN123</b></small></p>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <select value={role} onChange={(e) => setRole(e.target.value)} required>
-                    <option value="Admin">Admin</option>
-                    <option value="Hospital">Hospital</option>
-                    <option value="Donor">Donor</option>
-                </select>
-                <input 
-                    type="text" 
-                    placeholder={`${role} ID`} 
-                    value={id} 
-                    onChange={(e) => setId(e.target.value)} 
-                    required 
-                />
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    );
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const response = await loginUser(form);
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const role = response.data.user.role;
+      if (role === 'Admin') navigate('/admin/dashboard');
+      if (role === 'Hospital') navigate('/hospital/requests');
+      if (role === 'Donor') navigate('/donor/profile');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="login-shell">
+      <div className="login-card">
+        <h2>Welcome to RedReserveDB</h2>
+        <p style={{ color: 'var(--muted)' }}>Secure access for hospitals, donors, and admins.</p>
+        {error && <div className="alert">{error}</div>}
+        <form className="form-grid" onSubmit={handleLogin} style={{ marginTop: 16 }}>
+          <input name="email" placeholder="Email" type="email" onChange={handleChange} required />
+          <input name="password" placeholder="Password" type="password" onChange={handleChange} required />
+          <button className="btn" type="submit" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+        <p style={{ marginTop: 16, fontSize: 14 }}>
+          New here? <Link to="/register" style={{ color: 'var(--primary)' }}>Create an account</Link>
+        </p>
+        <p style={{ marginTop: 8, fontSize: 12, color: 'var(--muted)' }}>
+          Demo admin: admin@redreserve.com / Admin@123
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

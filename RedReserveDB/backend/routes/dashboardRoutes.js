@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const queryController = require('../controllers/queryController');
+const dashboardController = require('../controllers/dashboardController');
 const authMiddleware = require('../middleware/auth');
 const requireRole = require('../middleware/roles');
 
-router.get('/execute/:queryId', authMiddleware, requireRole('Admin'), queryController.executeQuery);
+router.get('/summary', authMiddleware, requireRole('Admin'), dashboardController.getSummary);
 
 module.exports = router;

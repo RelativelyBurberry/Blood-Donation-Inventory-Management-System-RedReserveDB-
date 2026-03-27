@@ -37,7 +37,7 @@ exports.executeQuery = async (req, res) => {
             sql = `SELECT Blood_Group, COUNT(Unit_Number) AS Total_Units FROM Blood_Unit GROUP BY Blood_Group HAVING COUNT(Unit_Number) > (SELECT AVG(Unit_Count) FROM (SELECT COUNT(Unit_Number) AS Unit_Count FROM Blood_Unit GROUP BY Blood_Group) AS temp)`;
             break;
 
-        // --- NEW RAW TABLE QUERIES (11-20) ---
+        // --- RAW TABLE QUERIES (11-22) ---
         case '11': sql = `SELECT * FROM Blood_Bank`; break;
         case '12': sql = `SELECT * FROM Blood_Bank_Contact`; break;
         case '13': sql = `SELECT * FROM Hospital`; break;
@@ -48,6 +48,8 @@ exports.executeQuery = async (req, res) => {
         case '18': sql = `SELECT * FROM Blood_Unit`; break;
         case '19': sql = `SELECT * FROM Donation_Camp`; break;
         case '20': sql = `SELECT * FROM Collected_At`; break;
+        case '21': sql = `SELECT * FROM Auth_User`; break;
+        case '22': sql = `SELECT * FROM Request_Unit`; break;
 
         default:
             return res.status(400).json({ error: "Invalid Query ID" });

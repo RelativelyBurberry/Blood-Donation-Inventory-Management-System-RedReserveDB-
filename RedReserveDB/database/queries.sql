@@ -69,3 +69,9 @@ HAVING COUNT(Unit_Number) > (
         GROUP BY Blood_Group 
     ) AS temp 
 );
+
+-- 11. Auth users
+SELECT * FROM Auth_User;
+
+-- 12. Request-Unit links
+SELECT * FROM Request_Unit;

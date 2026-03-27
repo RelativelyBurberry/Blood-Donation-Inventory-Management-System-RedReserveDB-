@@ -52,31 +52,54 @@ CREATE TABLE Staff (
     FOREIGN KEY (Staff_id) REFERENCES UserTable(User_id) 
 ); 
 
--- 7. Request
+-- 7. Auth Users (Login + Roles)
+CREATE TABLE Auth_User ( 
+    Auth_id INT AUTO_INCREMENT PRIMARY KEY,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Password_Hash VARCHAR(255) NOT NULL,
+    Role ENUM('Admin', 'Donor', 'Hospital') NOT NULL,
+    Linked_Id VARCHAR(10),
+    Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 8. Request
 CREATE TABLE Request ( 
     Request_id VARCHAR(10) PRIMARY KEY, 
     Blood_Group VARCHAR(5), 
     Quantity INT, 
     Request_Date DATE, 
     Status VARCHAR(20), 
+    Urgency VARCHAR(20),
     Bank_id VARCHAR(10), 
     Hospital_id VARCHAR(10), 
     Patient_id VARCHAR(10), 
+    Requested_By INT,
+    Approved_By INT,
+    Approved_At DATETIME,
+    Rejected_At DATETIME,
+    Fulfilled_At DATETIME,
     FOREIGN KEY (Bank_id) REFERENCES Blood_Bank(Bank_id), 
-    FOREIGN KEY (Hospital_id) REFERENCES Hospital(Hospital_id) 
+    FOREIGN KEY (Hospital_id) REFERENCES Hospital(Hospital_id),
+    FOREIGN KEY (Requested_By) REFERENCES Auth_User(Auth_id),
+    FOREIGN KEY (Approved_By) REFERENCES Auth_User(Auth_id)
 ); 
 
--- 8. Blood_Unit
+-- 9. Blood_Unit
 CREATE TABLE Blood_Unit ( 
     Unit_Number VARCHAR(10) PRIMARY KEY, 
     Blood_Group VARCHAR(5), 
     Expiry_Date DATE, 
     Status VARCHAR(20), 
     Hospital_id VARCHAR(10), 
-    FOREIGN KEY (Hospital_id) REFERENCES Hospital(Hospital_id) 
+    Donor_id VARCHAR(10),
+    Bank_id VARCHAR(10),
+    Collected_Date DATE,
+    FOREIGN KEY (Hospital_id) REFERENCES Hospital(Hospital_id),
+    FOREIGN KEY (Donor_id) REFERENCES Donor(Donor_id),
+    FOREIGN KEY (Bank_id) REFERENCES Blood_Bank(Bank_id)
 ); 
 
--- 9. Donation_Camp
+-- 10. Donation_Camp
 CREATE TABLE Donation_Camp ( 
     Camp_id VARCHAR(10) PRIMARY KEY, 
     Location VARCHAR(100), 
@@ -84,11 +107,20 @@ CREATE TABLE Donation_Camp (
     Organizer VARCHAR(100) 
 ); 
 
--- 10. Collected_At
+-- 11. Collected_At
 CREATE TABLE Collected_At ( 
     Unit_Number VARCHAR(10), 
     Camp_id VARCHAR(10), 
     PRIMARY KEY (Unit_Number, Camp_id), 
     FOREIGN KEY (Unit_Number) REFERENCES Blood_Unit(Unit_Number), 
     FOREIGN KEY (Camp_id) REFERENCES Donation_Camp(Camp_id) 
+);
+
+-- 12. Request_Unit (tracks which units were reserved/used for a request)
+CREATE TABLE Request_Unit (
+    Request_id VARCHAR(10),
+    Unit_Number VARCHAR(10),
+    PRIMARY KEY (Request_id, Unit_Number),
+    FOREIGN KEY (Request_id) REFERENCES Request(Request_id),
+    FOREIGN KEY (Unit_Number) REFERENCES Blood_Unit(Unit_Number)
 );

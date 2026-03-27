@@ -44,21 +44,21 @@ INSERT INTO Staff (Staff_id, Certification, Job_Title) VALUES
 
 -- Insert Blood Units
 -- Note: Expiry dates use DATE_ADD to ensure Query 5 (expiring in 30 days) always works for your demo!
-INSERT INTO Blood_Unit (Unit_Number, Blood_Group, Expiry_Date, Status, Hospital_id) VALUES 
-('BU101', 'O+', DATE_ADD(CURRENT_DATE, INTERVAL 15 DAY), 'Available', 'H01'),
-('BU102', 'A+', DATE_ADD(CURRENT_DATE, INTERVAL 45 DAY), 'Available', 'H01'),
-('BU103', 'B-', DATE_ADD(CURRENT_DATE, INTERVAL 10 DAY), 'Available', 'H02'),
-('BU104', 'O-', '2026-10-15', 'Used', 'H02'),
-('BU105', 'AB+', DATE_ADD(CURRENT_DATE, INTERVAL 5 DAY), 'Available', 'H03'),
-('BU106', 'O+', DATE_ADD(CURRENT_DATE, INTERVAL 60 DAY), 'Available', 'H01');
+INSERT INTO Blood_Unit (Unit_Number, Blood_Group, Expiry_Date, Status, Hospital_id, Donor_id, Bank_id, Collected_Date) VALUES 
+('BU101', 'O+', DATE_ADD(CURRENT_DATE, INTERVAL 15 DAY), 'Available', NULL, 'U01', 'BB01', DATE_SUB(CURRENT_DATE, INTERVAL 20 DAY)),
+('BU102', 'A+', DATE_ADD(CURRENT_DATE, INTERVAL 45 DAY), 'Available', NULL, 'U02', 'BB01', DATE_SUB(CURRENT_DATE, INTERVAL 10 DAY)),
+('BU103', 'B-', DATE_ADD(CURRENT_DATE, INTERVAL 10 DAY), 'Available', NULL, 'U03', 'BB02', DATE_SUB(CURRENT_DATE, INTERVAL 25 DAY)),
+('BU104', 'O-', '2026-10-15', 'Used', 'H02', 'U04', 'BB02', DATE_SUB(CURRENT_DATE, INTERVAL 40 DAY)),
+('BU105', 'AB+', DATE_ADD(CURRENT_DATE, INTERVAL 5 DAY), 'Available', NULL, 'U05', 'BB03', DATE_SUB(CURRENT_DATE, INTERVAL 5 DAY)),
+('BU106', 'O+', DATE_ADD(CURRENT_DATE, INTERVAL 60 DAY), 'Available', NULL, 'U01', 'BB01', DATE_SUB(CURRENT_DATE, INTERVAL 12 DAY));
 
 -- Insert Requests
 -- Note: O+ is requested most to trigger Query 2! Statuses are mixed for Query 7.
-INSERT INTO Request (Request_id, Blood_Group, Quantity, Request_Date, Status, Bank_id, Hospital_id, Patient_id) VALUES 
-('R001', 'O+', 2, '2026-03-20', 'Pending', 'BB01', 'H01', 'P991'),
-('R002', 'A+', 1, '2026-03-21', 'Approved', 'BB02', 'H02', 'P992'),
-('R003', 'O+', 3, '2026-03-25', 'Pending', 'BB01', 'H03', 'P993'),
-('R004', 'B-', 1, '2026-03-26', 'Pending', 'BB03', 'H01', 'P994');
+INSERT INTO Request (Request_id, Blood_Group, Quantity, Request_Date, Status, Urgency, Bank_id, Hospital_id, Patient_id, Requested_By, Approved_By, Approved_At, Rejected_At, Fulfilled_At) VALUES 
+('R001', 'O+', 2, '2026-03-20', 'Pending', 'High', 'BB01', 'H01', 'P991', NULL, NULL, NULL, NULL, NULL),
+('R002', 'A+', 1, '2026-03-21', 'Approved', 'Medium', 'BB02', 'H02', 'P992', NULL, NULL, NULL, NULL, NULL),
+('R003', 'O+', 3, '2026-03-25', 'Pending', 'Low', 'BB01', 'H03', 'P993', NULL, NULL, NULL, NULL, NULL),
+('R004', 'B-', 1, '2026-03-26', 'Rejected', 'High', 'BB03', 'H01', 'P994', NULL, NULL, NULL, NOW(), NULL);
 
 -- Insert Donation Camps
 INSERT INTO Donation_Camp (Camp_id, Location, Date_of_Camp, Organizer) VALUES 
@@ -71,3 +71,7 @@ INSERT INTO Collected_At (Unit_Number, Camp_id) VALUES
 ('BU102', 'C01'),
 ('BU103', 'C02'),
 ('BU105', 'C02');
+
+-- Optional: request-unit link data for demo charts
+INSERT INTO Request_Unit (Request_id, Unit_Number) VALUES
+('R002', 'BU102');
